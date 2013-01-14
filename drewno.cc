@@ -1,8 +1,8 @@
 #include <iostream>
-#include <stdlib.h>
-//#include <constream>
-#define FALSE 0
-#define TRUE 1
+
+
+using namespace std;
+
 struct AVLNode
 {
 	int data ;
@@ -48,7 +48,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 		root -> left = NULL ;
 		root -> right = NULL ;
 		root -> balfact = 0 ;
-		*h = TRUE ;
+		*h = true ;
 		return ( root ) ;
 	}
 	if ( data < root -> data )
@@ -64,7 +64,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 					node1 = root -> left ;
 					if ( node1 -> balfact == 1 )
 					{
-						cout << "\nRight rotation." ;
+						cout << <<endl << "Right rotation." ;
 						root -> left = node1 -> right ;
 						node1 -> right = root ;
 						root -> balfact = 0 ;
@@ -72,7 +72,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 					}
 					else
 					{
-						cout << "\nDouble rotation, left then right." ;
+						cout << endl <<"Double rotation, left then right." ;
 						node2 = node1 -> right ;
 						node1 -> right = node2 -> left ;
 						node2 -> left = node1 ;
@@ -89,7 +89,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 						root = node2 ;
 					}
 					root -> balfact = 0 ;
-					*h = FALSE ;
+					*h = false ;
 					break ;
  
 				case 0 :
@@ -97,7 +97,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 					break ;
 				case -1 :
 					root -> balfact = 0 ;
-					*h = FALSE ;
+					*h = false ;
 			}
 		}
 	}
@@ -112,7 +112,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 			{
 				case 1 :
 					root -> balfact = 0 ;
-					*h = FALSE ;
+					*h = false ;
 					break ;
 				case 0 :
 					root -> balfact = -1 ;
@@ -121,7 +121,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 					node1 = root -> right ;
 					if ( node1 -> balfact == -1 )
 					{
-						cout << "\nLeft rotation." ;
+						cout << endl << "Left rotation." ;
 						root -> right = node1 -> left ;
 						node1 -> left = root ;
 						root -> balfact = 0 ;
@@ -129,7 +129,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 					}
 					else
 					{
-						cout << "\nDouble rotation, right then left." ;
+						cout << endl << "Double rotation, right then left." ;
 						node2 = node1 -> left ;
 						node1 -> left = node2 -> right ;
 						node2 -> right = node1 ;
@@ -146,7 +146,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 						root = node2 ;
 					}
 					root -> balfact = 0 ;
-					*h = FALSE ;
+					*h = false ;
 			}
 		}
 	}
@@ -168,7 +168,7 @@ AVLNode* avltree :: deldata ( AVLNode *root, int data, int *h )
 		cout << root -> data ;
 	if ( root == NULL )
 	{
-		cout << "\nNo such data." ;
+		cout << endl << "No such data." ;
 		return ( root ) ;
 	}
 	else
@@ -193,7 +193,7 @@ AVLNode* avltree :: deldata ( AVLNode *root, int data, int *h )
 				if ( node -> right == NULL )
 				{
 					root = node -> left ;
-					*h = TRUE ;
+					*h = true ;
 					delete ( node ) ;
 				}
 				else
@@ -201,7 +201,7 @@ AVLNode* avltree :: deldata ( AVLNode *root, int data, int *h )
 					if ( node -> left == NULL )
 					{
 						root = node -> right ;
-						*h = TRUE ;
+						*h = true ;
 						delete ( node ) ;
 					}
 					else
@@ -232,7 +232,7 @@ AVLNode* avltree :: del ( AVLNode *succ, AVLNode *node, int *h )
 		node -> data = succ -> data ;
 		succ = succ -> right ;
 		delete ( temp ) ;
-		*h = TRUE ;
+		*h = true ;
 	}
 	return ( succ ) ;
 }
@@ -246,20 +246,20 @@ AVLNode* avltree :: balright ( AVLNode *root, int *h )
 			break ;
 		case 0 :
 			root -> balfact = -1 ;
-			*h  = FALSE ;
+			*h  = false ;
 			break ;
 		case -1 :
 			temp1 = root -> right ;
 			if ( temp1 -> balfact <= 0 )
 			{
-				cout << "\nLeft rotation." ;
+				cout << endl << "Left rotation." ;
 				root -> right = temp1 -> left ;
 				temp1 -> left = root ;
 				if ( temp1 -> balfact == 0 )
 				{
 					root -> balfact = -1 ;
 					temp1 -> balfact = 1 ;
-					*h = FALSE ;
+					*h = false ;
 				}
 				else
 				{
@@ -269,7 +269,7 @@ AVLNode* avltree :: balright ( AVLNode *root, int *h )
 			}
 			else
 			{
-				cout << "\nDouble rotation, right then left." ;
+				cout << endl << "Double rotation, right then left." ;
 				temp2 = temp1 -> left ;
 				temp1 -> left = temp2 -> right ;
 				temp2 -> right = temp1 ;
@@ -300,14 +300,14 @@ AVLNode* avltree :: balleft ( AVLNode *root, int *h )
  
 		case 0 :
 			root -> balfact = 1 ;
-			*h = FALSE ;
+			*h = false ;
 			break ;
  
 		case 1 :
 			temp1 = root -> left ;
 			if ( temp1 -> balfact >= 0 )
 			{
-				cout << "\nRight rotation." ;
+				cout << endl << "Right rotation." ;
 				root -> left = temp1 -> right ;
 				temp1 -> right = root ;
  
@@ -315,7 +315,7 @@ AVLNode* avltree :: balleft ( AVLNode *root, int *h )
 				{
 					root -> balfact = 1 ;
 					temp1 -> balfact = -1 ;
-					*h = FALSE ;
+					*h = false ;
 				}
 				else
 				{
@@ -325,7 +325,7 @@ AVLNode* avltree :: balleft ( AVLNode *root, int *h )
 			}
 			else
 			{
-				cout << "\nDouble rotation, left then right." ;
+				cout << endl << "Double rotation, left then right." ;
 				temp2 = temp1 -> right ;
 				temp1 -> right = temp2 -> left ;
 				temp2 -> left = temp1 ;
@@ -364,12 +364,11 @@ void avltree :: deltree ( AVLNode *root )
 	}
 	delete ( root ) ;
 }
-void main( )
+int main( )
 {
 	avltree at ;
 	AVLNode *avl = NULL ;
 	int h ;
-	clrscr();
 	avl = at.insert ( 20, &h ) ;
 	at.setroot ( avl ) ;
 	avl = at.insert ( 6, &h ) ;
@@ -392,13 +391,13 @@ void main( )
 	at.setroot ( avl ) ;
 	avl = at.insert ( 13, &h ) ;
 	at.setroot ( avl ) ;
-	cout << endl << "AVL tree:\n" ;
+	cout << endl << "AVL tree:" << endl ;
 	at.display ( avl ) ;
 	avl = at.deldata ( avl, 20, &h ) ;
 	at.setroot ( avl ) ;
 	avl = at.deldata ( avl, 12, &h ) ;
 	at.setroot ( avl ) ;
-	cout << endl << "AVL tree after deletion of a node:\n" ;
+	cout << endl << "AVL tree after deletion of a node:" << endl ;
 	at.display ( avl ) ;
-	getch();
+	return 0;
 }
