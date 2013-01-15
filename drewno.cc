@@ -1,38 +1,11 @@
 #include <iostream>
 #include "ERRORS.h"
+#include "DREWNO.h"
 #include <queue>
 
 using namespace std;
 
-struct AVLNode
-{
-	int data ;
-	int balfact ;
-	AVLNode *left ;
-	AVLNode *right ;
-} ;
- 
-class Avltree
-{
-	private :
-		AVLNode *root ;
-	public :
-		Avltree( ) ;
-		AVLNode*  insert ( int data, bool *h ) ;
-		static AVLNode* buildtree ( AVLNode *root, int data, bool *h ) ;
-		void display( AVLNode *root ) ;
-		AVLNode* deldata ( AVLNode* root, int data, bool *h ) ;
-		static AVLNode* del ( AVLNode *node, AVLNode* root, bool *h ) ;
-		static AVLNode* balright ( AVLNode *root, bool *h ) ;
-		static AVLNode* balleft ( AVLNode* root, bool *h ) ;
-		//void setroot ( AVLNode *avl ) ;
-		int height();
-		void draw ();
-		int count (AVLNode* n);
-		bool isEmpty ();
-		~Avltree( ) ;
-		static void deltree ( AVLNode *root ) ;
-} ;
+
 Avltree :: Avltree( )
 {
 	root = NULL ;
@@ -360,7 +333,6 @@ void Avltree::draw (){
 	std::queue < AVLNode* > cueue1;
 	cueue1.push (root);
 	cueue1.push (LineToken);
-	//cout << cueue1.front()->data<<endl;
 	while (!cueue1.empty()){
 		AVLNode* current;
 		current = cueue1.front();
@@ -381,6 +353,7 @@ void Avltree::draw (){
 				cueue1.push (LineToken);
 		}
 	}
+	delete (LineToken);
 	cout << endl;
 }
 		
@@ -415,37 +388,51 @@ int main( )
 	Avltree at ;
 	AVLNode *avl = NULL ;
 	bool h ;
-	avl = at.insert ( 20, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 6, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 29, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 5, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 12, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 25, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 32, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 10, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 15, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 27, &h ) ;
-//	at.setroot ( avl ) ;
-	avl = at.insert ( 13, &h ) ;
-//	at.setroot ( avl ) ;
+	try{
+		avl = at.insert ( 20, &h ) ;
+		avl = at.insert ( 6, &h ) ;
+		avl = at.insert ( 29, &h ) ;
+		avl = at.insert ( 5, &h ) ;
+		avl = at.insert ( 12, &h ) ;
+		avl = at.insert ( 25, &h ) ;
+		avl = at.insert ( 32, &h ) ;
+		avl = at.insert ( 10, &h ) ;
+		avl = at.insert ( 15, &h ) ;
+		avl = at.insert ( 27, &h ) ;
+		avl = at.insert ( 13, &h ) ;
+	}catch (WrongInput){
+		cout << endl << "Wrong data." << endl;
+	}catch (MemoryFull){
+		cout << endl << "Memory full" << endl;
+	}catch (exception){
+		cout << "Unknown error";
+	}
 	cout << endl << "AVL tree:" << endl ;
 	at.display ( avl ) ;
-	//avl = at.deldata ( avl, 20, &h ) ;
-//	at.setroot ( avl ) ;
-	//avl = at.deldata ( avl, 12, &h ) ;
-//	at.setroot ( avl ) ;
-	//cout << endl << "AVL tree after deletion of a node:" << endl ;
-	//at.display ( avl ) ;
-	cout << endl;
+	cout << endl << endl;
 	at.draw ();
+	cout << endl;
+	try{
+		avl = at.deldata ( avl, 20, &h ) ;
+	}catch (NoSuchData){
+		cout << "No such files found" << endl;
+	}
+	try{
+		avl = at.deldata ( avl, 12, &h ) ;
+	}catch (NoSuchData){
+		cout << "No such files found" << endl;
+	}
+	try{
+		avl = at.deldata ( avl, 1, &h ) ;
+	}catch (NoSuchData){
+		cout << "No such files found" << endl;
+	}catch (exception){
+		cout << "Unknown error";
+	}
+	cout << endl << "AVL tree after deletion of a nodes (20&12):" << endl ;
+	at.display ( avl ) ;
+	cout << endl << endl;
+	at.draw ();
+	cout << endl;
 	return 0;
 }
