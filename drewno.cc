@@ -1,5 +1,6 @@
 #include <iostream>
-
+#include "ERRORS.h"
+#include <queue>
 
 using namespace std;
 
@@ -11,39 +12,47 @@ struct AVLNode
 	AVLNode *right ;
 } ;
  
-class avltree
+class Avltree
 {
 	private :
 		AVLNode *root ;
 	public :
-		avltree( ) ;
-		AVLNode*  insert ( int data, int *h ) ;
-		static AVLNode* buildtree ( AVLNode *root, int data, int *h ) ;
+		Avltree( ) ;
+		AVLNode*  insert ( int data, bool *h ) ;
+		static AVLNode* buildtree ( AVLNode *root, int data, bool *h ) ;
 		void display( AVLNode *root ) ;
-		AVLNode* deldata ( AVLNode* root, int data, int *h ) ;
-		static AVLNode* del ( AVLNode *node, AVLNode* root, int *h ) ;
-		static AVLNode* balright ( AVLNode *root, int *h ) ;
-		static AVLNode* balleft ( AVLNode* root, int *h ) ;
-		void setroot ( AVLNode *avl ) ;
-		~avltree( ) ;
+		AVLNode* deldata ( AVLNode* root, int data, bool *h ) ;
+		static AVLNode* del ( AVLNode *node, AVLNode* root, bool *h ) ;
+		static AVLNode* balright ( AVLNode *root, bool *h ) ;
+		static AVLNode* balleft ( AVLNode* root, bool *h ) ;
+		//void setroot ( AVLNode *avl ) ;
+		int height();
+		void draw ();
+		int count (AVLNode* n);
+		bool isEmpty ();
+		~Avltree( ) ;
 		static void deltree ( AVLNode *root ) ;
 } ;
-avltree :: avltree( )
+Avltree :: Avltree( )
 {
 	root = NULL ;
 }
-AVLNode* avltree :: insert ( int data, int *h )
+AVLNode* Avltree :: insert ( int data, bool *h )
 {
 	root = buildtree ( root, data, h ) ;
 	return root ;
 }
-AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
+AVLNode* Avltree :: buildtree ( AVLNode *root, int data, bool *h )
 {
 	AVLNode *node1, *node2 ;
  
 	if ( root == NULL )
 	{
+		try{
 		root = new AVLNode ;
+		} catch (std::bad_alloc){
+			throw MemoryFull();
+		}
 		root -> data = data ;
 		root -> left = NULL ;
 		root -> right = NULL ;
@@ -64,7 +73,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 					node1 = root -> left ;
 					if ( node1 -> balfact == 1 )
 					{
-						cout << <<endl << "Right rotation." ;
+						cout << endl << "Right rotation." ;
 						root -> left = node1 -> right ;
 						node1 -> right = root ;
 						root -> balfact = 0 ;
@@ -152,7 +161,7 @@ AVLNode* avltree :: buildtree ( AVLNode *root, int data, int *h )
 	}
 	return ( root ) ;
 }
-void avltree :: display ( AVLNode* root )
+void Avltree :: display ( AVLNode* root )
 {
 	if ( root != NULL )
 	{
@@ -161,62 +170,49 @@ void avltree :: display ( AVLNode* root )
 		display ( root -> right ) ;
 	}
 }
-AVLNode* avltree :: deldata ( AVLNode *root, int data, int *h )
+AVLNode* Avltree :: deldata ( AVLNode *root, int data, bool *h )
 {
 	AVLNode *node ;
-	if ( root -> data == 13 )
-		cout << root -> data ;
 	if ( root == NULL )
 	{
-		cout << endl << "No such data." ;
+		throw NoSuchData();
 		return ( root ) ;
 	}
-	else
-	{
 		if ( data < root -> data )
 		{
 			root -> left = deldata ( root -> left, data, h ) ;
 			if ( *h )
 				root = balright ( root, h ) ;
-		}
-		else
+		}else{
+		if ( data > root -> data )
 		{
-			if ( data > root -> data )
+			root -> right = deldata ( root -> right, data, h ) ;
+			if ( *h )
+				root = balleft ( root, h ) ;
+		}else{
+			node = root ;
+			if ( node -> right == NULL )
 			{
-				root -> right = deldata ( root -> right, data, h ) ;
-				if ( *h )
-					root = balleft ( root, h ) ;
-			}
-			else
-			{
-				node = root ;
-				if ( node -> right == NULL )
+				root = node -> left ;
+				*h = true ;
+				delete ( node ) ;
+			}else{
+				if ( node -> left == NULL )
 				{
-					root = node -> left ;
+					root = node -> right ;
 					*h = true ;
 					delete ( node ) ;
-				}
-				else
-				{
-					if ( node -> left == NULL )
-					{
-						root = node -> right ;
-						*h = true ;
-						delete ( node ) ;
-					}
-					else
-					{
-						node -> right = del ( node -> right, node, h ) ;
-						if ( *h )
-							root = balleft ( root, h ) ;
-					}
+				}else{
+					node -> right = del ( node -> right, node, h ) ;
+					if ( *h )
+						root = balleft ( root, h ) ;
 				}
 			}
 		}
 	}
 	return ( root ) ;
 }
-AVLNode* avltree :: del ( AVLNode *succ, AVLNode *node, int *h )
+AVLNode* Avltree :: del ( AVLNode *succ, AVLNode *node, bool *h )
 {
 	AVLNode *temp = succ ;
  
@@ -236,7 +232,7 @@ AVLNode* avltree :: del ( AVLNode *succ, AVLNode *node, int *h )
 	}
 	return ( succ ) ;
 }
-AVLNode* avltree :: balright ( AVLNode *root, int *h )
+AVLNode* Avltree :: balright ( AVLNode *root, bool *h )
 {
 	AVLNode *temp1, *temp2 ;
 	switch ( root -> balfact )
@@ -289,7 +285,7 @@ AVLNode* avltree :: balright ( AVLNode *root, int *h )
 	}
 	return ( root ) ;
 }
-AVLNode* avltree :: balleft ( AVLNode *root, int *h )
+AVLNode* Avltree :: balleft ( AVLNode *root, bool *h )
 {
 	AVLNode *temp1, *temp2 ;
 	switch ( root -> balfact )
@@ -345,17 +341,67 @@ AVLNode* avltree :: balleft ( AVLNode *root, int *h )
 	}
 	return ( root ) ;
 }
-void avltree :: setroot ( AVLNode *avl )
-{
-	root = avl ;
+
+int Avltree::height(){
+	AVLNode* n;
+	n = root;
+	int i = 0;
+	while (n != NULL){
+		i++;
+		n = n->left;
+	}
+	return i;
 }
-avltree :: ~avltree( )
+
+void Avltree::draw (){
+	int d = height();
+	AVLNode* LineToken;
+	LineToken = new AVLNode;
+	std::queue < AVLNode* > cueue1;
+	cueue1.push (root);
+	cueue1.push (LineToken);
+	//cout << cueue1.front()->data<<endl;
+	while (!cueue1.empty()){
+		AVLNode* current;
+		current = cueue1.front();
+		cueue1.pop ();
+		if (current != NULL){
+			for (int i = 0; i < d; i++)
+				cout << "\t";
+			cout << current->data;
+			cueue1.push (current->left);
+			cueue1.push (current->right);
+		}else
+			cout << "\tx";
+		if (cueue1.front() == LineToken){
+			cueue1.pop();
+			cout << endl;
+			d--;
+			if (current != NULL)
+				cueue1.push (LineToken);
+		}
+	}
+	cout << endl;
+}
+		
+
+
+int Avltree::count (AVLNode* n){
+	if (n !=NULL)
+		return 1 + count (n->left) + count (n->right);
+	else return 0;
+}
+bool Avltree::isEmpty (){
+	return root == NULL;
+}
+
+Avltree :: ~Avltree( )
 {
-	deltree ( root ) ;
+	delete ( root ) ;
 }
  
  
-void avltree :: deltree ( AVLNode *root )
+void Avltree :: deltree ( AVLNode *root )
 {
 	if ( root != NULL )
 	{
@@ -366,38 +412,40 @@ void avltree :: deltree ( AVLNode *root )
 }
 int main( )
 {
-	avltree at ;
+	Avltree at ;
 	AVLNode *avl = NULL ;
-	int h ;
+	bool h ;
 	avl = at.insert ( 20, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 6, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 29, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 5, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 12, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 25, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 32, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 10, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 15, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 27, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	avl = at.insert ( 13, &h ) ;
-	at.setroot ( avl ) ;
+//	at.setroot ( avl ) ;
 	cout << endl << "AVL tree:" << endl ;
 	at.display ( avl ) ;
-	avl = at.deldata ( avl, 20, &h ) ;
-	at.setroot ( avl ) ;
-	avl = at.deldata ( avl, 12, &h ) ;
-	at.setroot ( avl ) ;
-	cout << endl << "AVL tree after deletion of a node:" << endl ;
-	at.display ( avl ) ;
+	//avl = at.deldata ( avl, 20, &h ) ;
+//	at.setroot ( avl ) ;
+	//avl = at.deldata ( avl, 12, &h ) ;
+//	at.setroot ( avl ) ;
+	//cout << endl << "AVL tree after deletion of a node:" << endl ;
+	//at.display ( avl ) ;
+	cout << endl;
+	at.draw ();
 	return 0;
 }
